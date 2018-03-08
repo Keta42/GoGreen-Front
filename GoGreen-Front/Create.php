@@ -25,7 +25,7 @@
 	<div class="container">
 	<b>Nom : </b> Alexandre Dupont <br>
 	<input type="hidden" value="Alexandre Dupont"></input>
-	<b>Adresse : </b> 26 bis rue Pasteur, 59273 Fretin <br>
+	<b>Adresse : </b>26 bis rue Pasteur, 59273 Fretin <br>
 	<input type="hidden" value="26 bis rue Pasteur, 59273 Fretin"></input>
 	<b>Voiture : </b> Renault Twingo<br>
 	<input type="hidden" value="Renault Twingo"></input>
