@@ -4,6 +4,7 @@
     $mysqli = new mysqli("localhost", "root", "mypass123", "accounts_complete");
 
     require 'verify.php';
+    require 'nav.php';
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +20,7 @@
 
 <body>
 
-<? php include ('nav.php');?>
+<?php include ('nav.php');?>
 
 <link href="//db.onlinewebfonts.com/c/a4e256ed67403c6ad5d43937ed48a77b?family=Core+Sans+N+W01+35+Light" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="form.css" type="text/css">
