@@ -20,7 +20,7 @@
 
 <?php include ('nav.php');?>
 <br><br><br><br>
-<h1>Bienvenue sur Green Covoiturage </h1>
+<h1>Bienvenue sur GoGreen ! </h1>
 <br>
 <img src="carpooling.jpg" alt="Carpooling image" width="100%" /> 
 

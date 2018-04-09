@@ -1,12 +1,8 @@
 <!doctype html>
 
 <?php
-    session_start();
-    $_SESSION['message'] = '';
-    $mysqli = new mysqli("localhost", "root", "mypass123", "accounts_complete");
-
-    require 'verify.php';
     require 'nav.php';
+	session_start();
 ?>
 
 <html lang="en">
@@ -16,26 +12,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="form.css" />
-    <title>Alexandre Dupont</title>
+		
+		
+		
+    <title>
+	<?php 
+	  if (empty($_GET)) {
+		// no data passed by get
+		  $errmsg = "<h1> Oops ! </h1> <br> Looks like you ended here by accident !";
+		  echo $errmsg;
+	}
+	$id = $_GET["id"];
+	$response = file_get_contents('http://localhost/GoGreen/GoGreen-Backend/bid.php?');
+	$bids = json_decode($response);
+	$response = file_get_contents('http://localhost/GoGreen/GoGreen-Backend/user.php?');
+	$usrs = json_decode($response);
+	$response = file_get_contents('http://localhost/GoGreen/GoGreen-Backend/car.php?');
+	$cars = json_decode($response);
+	$response = file_get_contents('http://localhost/GoGreen/GoGreen-Backend/passenger.php?');
+	$pass = json_decode($response);
+	
+	$car = "";
+	$depart = "";
+	foreach($bids as $keys => $value){
+		if($id == $value->{'id'})
+			{
+				$car = $value->{'car'};
+				$depart = $value->{'departureTime'};
+			}
+	}
+	
+	
+	
+	$t_seats = "";
+	$plaque = "";
+	foreach($cars as $keys => $value){
+		if($car == $value->{'id'})
+			{
+				$t_seats = $value->{'numberSeats'};
+				$plaque = $value->{'licencePlate'};
+			}
+	}
+	
+	$p_count = 0;
+	$id_passengers = array();
+	foreach($pass as $keys => $value){
+		if($id == $value->{'bid'})
+			{
+				$id_passengers[$p_count] = $value->{'passenger'};
+				$p_count++;
+				
+			}
+	}
+	
+	$usrname = "";
+	$tel = "";
+	$rating = "";
+	$u_address = "";
+	$n_passengers = array();
+	$c_address = "";
+	
+	$passengers_page="";
+	
+	foreach($usrs as $keys => $value){
+		if($id == $value->{'id'})
+			{
+				$usrname = $value->{'name'}." ".$value->{'surname'};
+				$tel = $value->{'phoneNumber'};
+				$rating = $value->{'rate'};
+				$u_address = $value->{'address'};
+				$c_address = $value->{'companyAddress'};
+				
+			}else{
+				foreach($id_passengers as $p_key => $p_value){
+					if($p_value == $value->{'id'}){
+						$this_pass_n = $value->{'name'};
+						$this_pass_s = $value->{'surname'};
+						$passengers_page = $passengers_page . "<b>Passager : </b> ${this_pass_n}  ${this_pass_s} <br>";
+					}
+				}
+			}
+	}
+	$dispo_seat = $t_seats - $p_count;
+	echo $usrname?> </title>
   </head>
   <body>
-<?php include ('nav.php');?>
+  <br><br><br>	
+  <div class="container">
   
-    <h1></h1>
-	<b>Nom : </b> Alexandre Dupont <br>
-	<b>Adresse : </b> 26 bis rue Pasteur, 59273 Fretin <br>
-	<b>Voiture : </b> Renault Twingo<br>
-	<b>Heure de départ : </b> 7:20<br>
+  
 	
 	
+	<?php
 	
-	<a href="https://www.google.com/maps/dir/?api=1&origin=Fretin,France&destination=Villeneuve+d+ascq,France&travelmode=driving&waypoints=Lesquin,France">Voir le trajet</a>
-
-	<div class="col-sm-2"><a href="optinbid.php" class="btn btn-primary">Rejoindre ce covoiturage</a> </div>
+	$page = "
+    <h1>
+	<b>Conducteur : </b> ${usrname} <br></h1>
 	
+	<b>Note : </b> ${rating} <br>
+	<b>Adresse : </b> ${u_address} <br>
+	<b>Adresse de la compagnie : </b> ${c_address} <br>
+	
+	<b>Nombre de places :  ${t_seats}</b><br>
+	<b>Plaque d'immatriculation : </b> ${plaque}<br>
+	<b>Départ : </b> ${depart}<br><br>
+	<h1> Passagers </h1><br>
+	
+	<b>Nombre de places libres : ${dispo_seat} </b> <br>
+	<b>Nombre de passagers : </b> ${p_count}<br>
+	${passengers_page}<br>
+	<h1>Contact</h1><br>
+	<b>Téléphone : </b> ${tel}<br><br><br>
+	
+	<a target=\"_blank\" class=\"btn btn-info\" href=\"https://www.google.com/maps/dir/?api=1&origin=${u_address}&destination=${c_address}&travelmode=driving\">Voir le trajet</a>
+	";
+	//&waypoints=
+	$pleaselog = "<div class=\"btn btn-secundary\">Vous devez vous connecter pour réserver une place</div>";
+	$njoin = "<div class=\"btn btn-secundary\">Covoiturage complet</div>";
+	if($dispo_seat == 0){$page .= $njoin ;	}else if(isset($_SESSION['usrID']) && !empty($_SESSION['usrID'])){$page = $page . "<form style=\"display: inline;\" action=\"http://localhost/GoGreen/GoGreen-Backend/user.php\" method=\"post\">
+  <input type=\"hidden\" name=\"_method\" value=\"put\" /><input type=\"hidden\" name=\"bid\" value=\"${id}\"/><input type=\"hidden\" name=\"passenger\" value=\"${_SESSION['usrID']}\"/><input type=\"submit\" class=\"btn btn-primary\" value=\"Rejoindre ce covoiturage\"></input></form>";} else{$page .= $pleaselog;}
+	$page .= "</div>";
+	echo $page;
+  ?>
+	
+	
+	<br><br>
+	<footer>
+            <p>&copy; Copyright GoGreen 2018</p>
+        </footer>
     <!-- Optional JavaScript -->
 	 <script src="https://maps.googleapis.com/maps/api/js?callback=myMap"></script> 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

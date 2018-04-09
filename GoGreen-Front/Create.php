@@ -16,7 +16,6 @@
     <title>Alexandre Dupont</title>
   </head>
   <body>
-  <?php include ('nav.php');?>
   <br><br><br>
   <form class="form-horizontal newBid" id="newBid" role="form" action="createBid.php" method="POST">
             
@@ -35,13 +34,17 @@
 	<select name="way">
     <option value="aller">De chez moi</option>
     <option value="retour">De l'entreprise</option>
-  </select>
-  <input type="submit" value="Créer l'annonce">
+	  </select>
+	  <input type="hidden" name="_method" value="put" />
+	  <input type="submit" value="Créer l'annonce">
   </form>
   </div>
+  <br><br><br>
 	
 	
-	
+	<footer>
+            <p>&copy; Copyright GoGreen 2018</p>
+        </footer>
       </body>
 </html>
 

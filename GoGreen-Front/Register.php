@@ -1,7 +1,7 @@
 <?php
     session_start();
     $_SESSION['message'] = '';
-    $mysqli = new mysqli("localname", "root", "password", "accounts_complete");
+    $mysqli = new mysqli("localname", "root", "root", "covoit");
 
     require 'validate.php';
 ?>

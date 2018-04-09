@@ -1,7 +1,7 @@
 <?php
     session_start();
     $_SESSION['message'] = '';
-    $mysqli = new mysqli("localhost", "root", "mypass123", "accounts_complete");
+    $mysqli = new mysqli("localhost", "root", "root", "covoit");
 
     require 'verify.php';
     require 'nav.php';
@@ -38,6 +38,6 @@
 
 </body>
         <footer>
-            <p>&copy; Copyright Green Covoit 2018</p>
+            <p>&copy; Copyright GoGreen 2018</p>
         </footer>
 </html>
